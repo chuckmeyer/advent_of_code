@@ -1,13 +1,13 @@
 var fs = require('fs');
 
-let getFile = (fileName) => {
+var getFile = (fileName) => {
   return new Promise((resolve, reject) => {
     fs.readFile(fileName, function(err, data) {
       resolve(data.toString().split('\n').filter(n => n));
     });
 })};
 
-let ValidPasswords = (passwords) => {
+var ValidPasswords = (passwords) => {
   return new Promise((resolve, reject) => {
     const regexpPassword = /(\d+)\-(\d+)\s(\w):\s(.+)/
     valid = passwords.filter((line) => {
@@ -19,8 +19,8 @@ let ValidPasswords = (passwords) => {
 
 async function validatePasswords() {
   try {
-    let values = await getFile('input.txt');
-    let valid = await ValidPasswords(values);
+    var values = await getFile('input.txt');
+    var valid = await ValidPasswords(values);
     console.log(`Found ${valid.length} valid passwords.`);
   } catch (err) {
     console.log(err);

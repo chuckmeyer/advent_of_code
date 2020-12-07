@@ -1,6 +1,6 @@
 var fs = require('fs');
 
-let getFile = (fileName) => {
+var getFile = (fileName) => {
   return new Promise((resolve, reject) => {
     fs.readFile(fileName, function(err, data) {
       if (err) {
@@ -13,17 +13,17 @@ let getFile = (fileName) => {
 })};
 
 async function getValues() {
-  let values = await getFile('day1-input.txt');
+  var values = await getFile('day1-input.txt');
   /* for(var i = 0;i < values.length;i++){
     console.log(`"${values[i]}"`);
   }; */
-  let res = await findSum(values, 2020);
+  var res = await findSum(values, 2020);
   console.log(`${res[0]} * ${res[1]} * ${res[2]} = ${res[0] * res[1] * res[2]}` );
 }
 
-let myValues = getValues();
+var myValues = getValues();
 
-let findSum = (items, value) => {
+var findSum = (items, value) => {
   return new Promise((resolve, reject) => {
     for (var i=0; i<items.length; i++){
       for(var j=0; j<items.length; j++){

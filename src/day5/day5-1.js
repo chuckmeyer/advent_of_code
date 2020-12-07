@@ -1,6 +1,6 @@
 var fs = require('fs');
 
-let getFile = (fileName) => {
+var getFile = (fileName) => {
   return new Promise((resolve, reject) => {
     fs.readFile(fileName, function(err, data) {
       resolve(data.toString().split('\n').filter(n => n));
@@ -8,7 +8,7 @@ let getFile = (fileName) => {
 })};
 
 function binRange(low,high,char) {
-  let mid = parseInt((high-low)/2) + low;
+  var mid = parseInt((high-low)/2) + low;
   if(char.match(/F|L/)){
     return [low,mid];
   } else if(char.match(/B|R/)){
@@ -26,18 +26,18 @@ function findSeatId(boardingPass){
 
   range = rowRange;
   rowPart.forEach(char => range = binRange(range[0],range[1],char));
-  let row = range[0];
+  var row = range[0];
 
   range = colRange;
   colPart.forEach(char => range = binRange(range[0],range[1],char));
-  let column = range[0];
+  var column = range[0];
 
   return parseInt(row*8+column);
 }
 
 async function highestSeatId() {
   try {
-    let boardingPasses = await getFile('input.txt');
+    var boardingPasses = await getFile('input.txt');
     seatIds = boardingPasses.map(findSeatId);
     console.log(Math.max.apply(null,seatIds));
   } catch (err) {

@@ -40,22 +40,29 @@ function parseRules(strings){
   return rules;
 }
 
-async function findParentBags() {
-  try {
-    const ruleStrings = await getFile('input-test.txt');
-    bagRules = parseRules(ruleStrings);
-    parentBags = bagRules.filter(bag => bag.contains('shiny gold'));
-    var parentParentBags = parentBags.map(parentBag => {
-      return bagRules.filter(bag => bag.contains(parentBag.type));
-    });
-    parentParentBags = parentParentBags.flat().filter((thing, index, self) =>
-      index === self.findIndex((t) => (
+function getParents(bag, bagRules) {
+  var parentBags = bagRules.filter(rule => rule.contains(bag.type));  
+  if(parentBags.length === 0){
+    return [];
+  } else {
+    return parentBags.concat(parentBags.map(parentBag => getParents(parentBag, bagRules)))
+      .flat().
+      filter((thing, index, self) =>
+        index === self.findIndex((t) => (
         t.type === thing.type
-      )));  
-    console.log(parentBags.concat(parentParentBags));
+      )));
+  }
+};
+
+async function totalParentBags() {
+  try {
+    const bagRules = parseRules(await getFile('input.txt'));
+    const myBag = new Bag('shiny gold', []);
+    parentBags = getParents(myBag, bagRules);
+    console.log(parentBags.length);
   } catch (err) {
     console.log(err);
   }
 }
 
-findParentBags();
+totalParentBags();

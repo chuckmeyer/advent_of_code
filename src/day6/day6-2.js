@@ -8,13 +8,18 @@ var getFile = (fileName) => {
 })};
 
 function getAnswerCount(group) {
-  let allAnswers = []
-
+  let allAnswers = [];
+  let unanimousAnswers = [];
+  
   group.forEach(answerString => {
     allAnswers = [...allAnswers, ...answerString.split('')];
   })
-  const uniqueAnswers = allAnswers.filter((item,index) => allAnswers.indexOf(item) === index)
-  return uniqueAnswers.length;
+  const uniqueAnswers = allAnswers.filter((item,index) => allAnswers.indexOf(item) === index);
+  uniqueAnswers.forEach(char => {
+    if(group.filter(answer => answer.includes(char)).length === group.length){
+      unanimousAnswers.push(char);
+  }});
+  return unanimousAnswers.length;
 }
 
 async function tallyAnswers() {

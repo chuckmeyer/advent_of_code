@@ -49,30 +49,27 @@ function parseRules (strings) {
   return rules
 }
 
-function getParents (bag, bagRules) {
-  const parentBags = bagRules.filter(rule => rule.contains(bag.type))
-  if (parentBags.length === 0) {
-    return []
+function getChildren (bag, bagRules) {
+  const childBags = bagRules
+    .filter(rule => rule.type === bag.type)
+    .map(obj => obj.contents)
+    .flat()
+  if (childBags.length === 0) {
+    return bag.number
   } else {
-    return parentBags.concat(parentBags.map(parentBag => getParents(parentBag, bagRules)))
-      .flat()
-      .filter((thing, index, self) =>
-        index === self.findIndex((t) => (
-          t.type === thing.type
-        ))
-      )
+    return (bag.number * (childBags.map(childBag => getChildren(childBag, bagRules)).reduce((sum, value) => sum + value) + 1))
   }
 };
 
-async function totalParentBags () {
+async function totalChildBags () {
   try {
     const bagRules = parseRules(await getFile('input.txt'))
-    const myBag = new Bag('shiny gold', [])
-    const parentBags = getParents(myBag, bagRules)
-    console.log(parentBags.length)
+    const myBag = new Bag('shiny gold', [], 1)
+    const totalBags = getChildren(myBag, bagRules)
+    console.log(totalBags - 1)
   } catch (err) {
     console.log(err)
   }
 }
 
-totalParentBags()
+totalChildBags()

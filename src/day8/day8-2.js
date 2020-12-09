@@ -18,23 +18,23 @@ class Computer {
     this.executedLines = []
   }
 
-  execute (instruction, number) {
-    if (this.executedLines.includes(number)) {
-      console.log(`[${number}] Loop detected!`)
+  execute (instruction, line) {
+    if (this.executedLines.includes(line)) {
+      console.log(`[${line}] Loop detected!`)
       return -1
     }
     const [operation, argument] = instruction.split(' ')
-    this.executedLines.push(number)
+    this.executedLines.push(line)
     switch (operation) {
       case 'nop':
-        return number + 1
+        return line + 1
       case 'acc':
         this.modifyAcc(parseInt(argument))
-        return number + 1
+        return line + 1
       case 'jmp':
-        return number + parseInt(argument)
+        return line + parseInt(argument)
       default:
-        console.log(`[${number}] Unknown instruction`)
+        console.log(`[${line}] Unknown instruction`)
         return -1
     }
   }
@@ -81,6 +81,7 @@ async function runProgram () {
         fixPoint++
       }
     }
+    console.log(`Fix at [${fixPoint - 1}] ${program[fixPoint -1 ]}`)
     console.log(handheld.getAcc())
   } catch (err) {
     console.log(err)

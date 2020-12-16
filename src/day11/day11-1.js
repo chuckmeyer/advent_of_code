@@ -12,13 +12,21 @@ function getFile (fileName) {
   })
 }
 
+function isOccupied (row, column, seatMap) {
+  return seatMap[row][column] === '#'
+}
+
+function inBounds (row, column, seatMap) {
+  return (row >= 0 && row < seatMap.length && column >= 0 && column < seatMap[row].length)
+}
+
 function findNeighbors (row, column, seatMap) {
   let occupied = 0
   for (const i of [-1, 0, 1]) {
     for (const j of [-1, 0, 1]) {
       if (i !== 0 || j !== 0) {
-        if (row + i >= 0 && row + i < seatMap.length && column + j >= 0 && column + j < seatMap[0].length) {
-          if (seatMap[row + i][column + j] === '#') {
+        if (inBounds(row + i, column + j, seatMap)) {
+          if (isOccupied(row + i, column + j, seatMap)) {
             occupied++
           }
         }
@@ -78,8 +86,9 @@ async function bestSeat () {
       const newSeatMap = runRules(seatMap)
       stasis = JSON.stringify(seatMap) === JSON.stringify(newSeatMap)
       seatMap = newSeatMap
+      // console.table(newSeatMap)
     }
-    console.table(totalOccupied(seatMap))
+    console.log(totalOccupied(seatMap))
   } catch (err) {
     console.log(err)
   }

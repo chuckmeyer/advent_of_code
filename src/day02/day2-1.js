@@ -1,39 +1,37 @@
-var fs = require('fs');
+'use strict'
+const fs = require('fs')
 
-var getFile = (fileName) => {
+function getFile (fileName) {
   return new Promise((resolve, reject) => {
-    fs.readFile(fileName, function(err, data) {
+    fs.readFile(fileName, function (err, data) {
       if (err) {
-        return console.error(err);
+        reject(err.stack)
       }
-      values = data.toString().split('\n');
-      values.pop(); 
-      resolve(values);
-    });
-})};
-
-var ValidPasswords = (passwords) => {
-  return new Promise((resolve, reject) => {
-    var valid = [];
-    const regexpPassword = /(\d+)\-(\d+)\s(\w):\s(.+)/
-    for(var i = 0;i < values.length;i++){
-      const match = values[i].match(regexpPassword);
-      var regexpChar = new RegExp(match[3], "g");
-      count = (match[4].match(regexpChar) || []).length;
-      if((match[1] <= count) && (count <= match[2])){
-        /*console.log(`${match[4]} contains between ${match[1]} and ${match[2]} varter ${match[3]} characters(${count}).`);
-        */
-        valid.push(values[i]);
-      }
-    };
-    resolve(valid);
-})};  
-
-async function getValues() {
-  var values = await getFile('input.txt');
-  var valid = await ValidPasswords(values);
-  console.log(valid);
-  console.log(`Found ${valid.length} matches.`);
+      resolve(data.toString().split('\n').filter(n => n))
+    })
+  })
 }
 
-var myValues = getValues();
+function validPasswords (passwords) {
+  const valid = []
+  const regexpPassword = /(\d+)-(\d+)\s(\w):\s(.+)/
+  for (let i = 0; i < passwords.length; i++) {
+    const match = passwords[i].match(regexpPassword)
+    const regexpChar = new RegExp(match[3], 'g')
+    const count = (match[4].match(regexpChar) || []).length
+    if ((match[1] <= count) && (count <= match[2])) {
+      // console.log(`${match[4]} contains between ${match[1]} and ${match[2]} varter ${match[3]} characters(${count}).`);
+      valid.push(passwords[i])
+    }
+  }
+  return valid
+}
+
+async function getValues () {
+  const values = await getFile('input.txt')
+  const valid = await validPasswords(values)
+  console.log(valid)
+  console.log(`Found ${valid.length} matches.`)
+}
+
+getValues()

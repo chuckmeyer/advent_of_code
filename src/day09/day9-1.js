@@ -14,7 +14,7 @@ const getFile = (fileName) => {
 
 const findInvalid = (data, range) => {
   return new Promise((resolve, reject) => {
-    let invalid = []
+    const invalid = []
     let i = 0
     while (i < data.length - range) {
       const preamble = data.slice(i, i + range)

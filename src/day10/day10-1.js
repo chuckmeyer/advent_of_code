@@ -7,7 +7,7 @@ const getFile = (fileName) => {
       if (err) {
         reject(err.stack)
       }
-      resolve(data.toString().split('\n').filter(n => n).map(value => parseInt(value)).sort((a, b) => a - b))
+      resolve(data.toString().split('\n').filter(n => n).map(n => parseInt(n)).sort((a, b) => a - b))
     })
   })
 }

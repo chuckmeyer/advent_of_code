@@ -19,7 +19,7 @@ class Ship {
     this.wpY = 1
   }
 
-  turn (direction, degrees) {
+  rotate (direction, degrees) {
     let i = (direction === 'R') ? degrees / 90 : 0 - (degrees / 90)
     i = (i % 4 + 4) % 4
     for (let j = 0; j < i; j++) {
@@ -62,13 +62,13 @@ function navigate (instruction, ship) {
   const parsed = instruction.match(/(\w)(\d+)/)
   const action = parsed[1]
   const value = parseInt(parsed[2])
-  console.log(action, value)
+  // console.log(action, value)
   if (action === 'F') {
     ship.forward(value)
   } else if (action.match(/N|E|S|W/)) {
     ship.move(action, value)
   } else if (action.match(/R|L/)) {
-    ship.turn(action, value)
+    ship.rotate(action, value)
   } else {
     console.error(`Unknown instruction: ${instruction}`)
   }
@@ -80,7 +80,7 @@ async function manhattanDistance () {
     const ferry = new Ship()
     route.forEach(instruction => {
       navigate(instruction, ferry)
-      console.log(ferry.x, ferry.y, ferry.wpX, ferry.wpY, ferry.location())
+      // console.log(ferry.x, ferry.y, ferry.wpX, ferry.wpY, ferry.location())
     })
     console.log(ferry.location())
   } catch (err) {

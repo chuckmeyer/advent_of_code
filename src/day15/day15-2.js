@@ -1,6 +1,20 @@
 const sequence = [7, 14, 0, 17, 11, 1, 2]
-/* const sequence = [0, 3, 6] */
 const iterations = 30000000
+//const sequence = [0, 3, 6]
+//const iterations = 2020
+
+function playTurn (turn) {
+  const played = turn.map.get(turn.next)
+  turn.map.set(turn.next, turn.counter)
+  turn.last = turn.next
+  if (played) {
+    turn.next = turn.counter - played
+  } else {
+    turn.next = 0
+  }
+  turn.counter++
+  return turn
+}
 
 function playGame (numbers, iterations) {
   const numbersMap = new Map()
@@ -8,21 +22,17 @@ function playGame (numbers, iterations) {
     numbersMap.set(numbers[n - 1], n)
   }
 
-  let lastNumber = numbers[numbers.length - 1]
-  let nextNumber = 0
-
-  for (let i = numbers.length + 1; i <= iterations; i++) {
-    const played = numbersMap.get(nextNumber)
-    numbersMap.set(nextNumber, i)
-    lastNumber = nextNumber
-    if (played) {
-      nextNumber = i - played
-    } else {
-      nextNumber = 0
-    }
+  let nextTurn = {
+    counter: numbers.length + 1,
+    last: numbers[numbers.length - 1],
+    next: 0,
+    map: numbersMap
   }
 
-  console.log(lastNumber)
+  for (let i = numbers.length + 1; i <= iterations; i++) {
+    nextTurn = playTurn(nextTurn)
+  }
+  console.log(nextTurn.last)
 }
 
 playGame(sequence, iterations)

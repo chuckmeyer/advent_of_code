@@ -30,28 +30,32 @@ function evalParenth (token, expression) {
 }
 
 function evalExpression (expression) {
-  let num1
   let num2 = expression.pop()
   if ((num2).toString().includes(')')) {
     const result = evalParenth(num2, expression)
     num2 = result[0]
     expression = result[1]
-    if (expression.length === 0) {
-      return parseInt(num2)
-    }
+  }
+  if (expression.length === 0) {
+    return [num2]
   }
   const op = expression.pop()
-  num2 = parseInt(num2)
-  if (expression.length === 1) {
-    num1 = parseInt(expression.pop())
-  } else {
-    num1 = evalExpression(expression)
+  if (expression.length > 1) {
+    expression = evalExpression(expression)
   }
-  return op === '+' ? num1 + num2 : num1 * num2
+  if (op === '+') {
+    expression = [parseInt(expression.pop()) + parseInt(num2)]
+  } else if (op === '*') {
+    expression = [parseInt(expression.pop()) * parseInt(num2)]
+  } else {
+    const operatorError = Error(`Unknown operator: ${op}`)
+    throw operatorError
+  }
+  return expression
 }
 
 function calculate (equation) {
-  return evalExpression(equation.split(' '))
+  return evalExpression(equation.split(' '))[0]
 }
 
 exports.calculate = calculate

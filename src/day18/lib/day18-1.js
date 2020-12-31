@@ -23,12 +23,14 @@ function evalParenth (token, expression) {
     sub.unshift(next)
     token = `${prefix}${evalExpression(sub)}`
   } else {
-    console.log('Mismatched parenthesis!')
+    const parenthError = Error('Mismatched parenthesis!')
+    throw parenthError
   }
   return [token, expression]
 }
 
 function evalExpression (expression) {
+  let num1
   let num2 = expression.pop()
   if ((num2).toString().includes(')')) {
     const result = evalParenth(num2, expression)
@@ -38,7 +40,6 @@ function evalExpression (expression) {
       return parseInt(num2)
     }
   }
-  let num1
   const op = expression.pop()
   num2 = parseInt(num2)
   if (expression.length === 1) {

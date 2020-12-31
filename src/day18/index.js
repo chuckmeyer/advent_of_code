@@ -1,6 +1,7 @@
-const { calculate } = require('./lib/day18-1')
+'use strict'
 
 const fs = require('fs')
+const { calculate } = require('./lib/day18-2')
 
 function getFile (fileName) {
   return new Promise((resolve, reject) => {
@@ -13,6 +14,9 @@ function getFile (fileName) {
   })
 }
 
+// const equation = '1 + 2 * 3 + 4'
+// const equation = '1 * 2 + 3 * 4'
+// const equation = '1 + 2 * 3 + 4 * 5 + 6'
 //const equation = '((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2'
 // const equation = '1 + (2 * 3) + (4 * (5 + 6))'
 // const equation = '(((1 + 2) * 3) + 4 * (5 + 6))'

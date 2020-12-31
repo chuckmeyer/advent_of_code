@@ -25,7 +25,7 @@ function getFile (fileName) {
 
 async function doHomework () {
   try {
-    const homework = await getFile('input.txt')
+    const homework = await getFile('./config/input.txt')
     console.log(homework.reduce((sum, equation) => sum + calculate(equation), 0))
   } catch (err) {
     console.log(err)

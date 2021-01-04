@@ -9,20 +9,19 @@ describe('2020 - Day 19 - Part One', () => {
   })
 
   it('should read a rule', () => {
-    validator.initialize(['0: 1 2'])
-    expect(validator.getRules()[0]).toEqual('1 2')
+    validator.initialize(['0: "a"'])
+    expect(validator.getRules()[0]).toEqual('"a"')
   })
 
   it('should parse rules', () => {
-    validator.initialize([
+    expect(validator.initialize([
       '0: 4 1 5',
       '1: 2 3 | 3 2',
       '2: 4 4 | 5 5',
       '3: 4 5 | 5 4',
       '4: "a"',
       '5: "b"'
-    ])
-    expect(validator.parseRules()).toEqual([
+    ])).toEqual([
       'aaaabb',
       'aaabab',
       'abbabb',
@@ -43,7 +42,6 @@ describe('2020 - Day 19 - Part One', () => {
       '4: "a"',
       '5: "b"'
     ])
-    validator.parseRules()
     expect(validator.isValid('ababbb')).toBe(true)
   })
 
@@ -56,7 +54,6 @@ describe('2020 - Day 19 - Part One', () => {
       '4: "a"',
       '5: "b"'
     ])
-    validator.parseRules()
     expect(validator.isValid('bababa')).toBe(false)
   })
 })

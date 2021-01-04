@@ -13,6 +13,7 @@ class Validator {
         this.rules[parsed[0]] = parsed[1]
       }
     })
+    return this.parseRules()
   }
 
   getRules () {
@@ -23,6 +24,11 @@ class Validator {
     this.rules.map(rule => console.log(rule))
   }
 
+  parseRules () {
+    this.matchStrings = this.parseRule(0)
+    return this.matchStrings
+  }
+
   parseRule (number) {
     const leafRule = /"(\w)"/
     const rule = this.rules[number]
@@ -31,47 +37,32 @@ class Validator {
     } else if (rule.includes('|')) {
       let matchStrings = []
       rule.split(' | ').forEach(orRule => {
-        let orStrings = []
-        orRule.split(' ').forEach(sub => {
-          const subStrings = this.parseRule(parseInt(sub))
-          if (orStrings.length < 1) {
-            orStrings = subStrings
-          } else {
-            const matrix = []
-            orStrings.forEach(orString => {
-              subStrings.forEach(subString => {
-                matrix.push(orString + subString)
-              })
-            })
-            orStrings = matrix
-          }
-        })
+        const orStrings = this.parseConcatRule(orRule)
         matchStrings = matchStrings.concat(orStrings)
       })
       return matchStrings
     } else {
-      let matchStrings = []
-      rule.split(' ').forEach(sub => {
-        const subStrings = this.parseRule(parseInt(sub))
-        if (matchStrings.length < 1) {
-          matchStrings = subStrings
-        } else {
-          const matrix = []
-          matchStrings.forEach(matchString => {
-            subStrings.forEach(subString => {
-              matrix.push(matchString + subString)
-            })
-          })
-          matchStrings = matrix
-        }
-      })
-      return matchStrings
+      return this.parseConcatRule(rule)
     }
   }
 
-  parseRules () {
-    this.matchStrings = this.parseRule(0)
-    return this.matchStrings
+  parseConcatRule (rule) {
+    let matchStrings = []
+    rule.split(' ').forEach(sub => {
+      const subStrings = this.parseRule(parseInt(sub))
+      if (matchStrings.length < 1) {
+        matchStrings = subStrings
+      } else {
+        const matrix = []
+        matchStrings.forEach(matchString => {
+          subStrings.forEach(subString => {
+            matrix.push(matchString + subString)
+          })
+        })
+        matchStrings = matrix
+      }
+    })
+    return matchStrings
   }
 
   isValid (message) {

@@ -2,7 +2,6 @@
 
 const fs = require('fs')
 const { Validator } = require('./lib/day19-1')
-// const { calculate } = require('./lib/day19-1')
 
 function getFile (fileName) {
   return new Promise((resolve, reject) => {

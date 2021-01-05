@@ -1,72 +1,42 @@
-const string1 = 'esew'
-const string2 = 'nwwswee'
-const string3 = 'sesenwnenenewseeswwswswwnenewsewsw'
+'use strict'
 
-class Tile {
-  constructor (location) {
-    this.location = location
+const fs = require('fs')
+const { normalize } = require('./lib/day24-1')
+
+function getFile (fileName) {
+  return new Promise((resolve, reject) => {
+    fs.readFile(fileName, function (err, data) {
+      if (err) {
+        reject(err.stack)
+      }
+      resolve(data.toString().split('\n').filter(n => n))
+    })
+  })
+}
+
+// const string = 'e'
+// const string1 = 'esew'
+// const string2 = 'nwwswee'
+// const string3 = 'sesenwnenenewseeswwswswwnenewsewsw'
+
+async function findBlackTiles () {
+  try {
+    const tiles = await getFile('./config/input-test.txt')
+    const blackTiles = []
+    tiles.forEach(location => {
+      const normalized = normalize(location)
+      if (blackTiles.includes(normalized)) {
+        console.log(`White flip: ${normalized}`)
+        blackTiles.splice(blackTiles.indexOf(normalized), 1)
+      } else {
+        console.log(`Black flip: ${normalized}`)
+        blackTiles.push(normalized)
+      }
+    })
+    console.log(blackTiles, blackTiles.length)
+  } catch (err) {
+    console.log(err)
   }
 }
 
-const grammar = {
-  nese: 'e',
-  sene: 'e',
-  esw: 'se',
-  swe: 'se',
-  wse: 'sw',
-  sew: 'sw',
-  nwsw: 'w',
-  swnw: 'w',
-  wne: 'nw',
-  new: 'nw',
-  enw: 'ne',
-  nwe: 'ne',
-  nwse: '',
-  senw: '',
-  nesw: '',
-  swne: '',
-  we: '',
-  ew: ''
-}
-
-function getToken(location) {
-  const intermediate = /n|s/
-  let token = location.slice(0, 1)
-  if (intermediate.test(token) === true) {
-    token += location.slice(1, 2)
-    location = location.slice(2)
-  } else {
-    location = location.slice(1)
-  }
-  return {
-    token: token,
-    location: location
-  }
-}
-
-function parseLocation (location) {
-  let parsedLocation = ''
-  let result = getToken(location)
-  if (result.location.length > 0) {
-    const token1 = result.token
-    result = getToken(result.location)
-    const token2 = result.token
-    location = result.location
-    const tuple = token1 + token2
-    if (tuple in grammar) {
-      parsedLocation += grammar[tuple]
-      location = grammar[tuple] + location
-    } else {
-      parsedLocation += token1
-      location = token2 + location
-    }
-  }
-  return parsedLocation
-}
-
-let parsedLocation = parseLocation(string1)
-console.log(parsedLocation)
-parsedLocation = parseLocation(parsedLocation)
-console.log(parsedLocation)
-//parseTile(string2)
-//parseTile(string3)
+findBlackTiles()

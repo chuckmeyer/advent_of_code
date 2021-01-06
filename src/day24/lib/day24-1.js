@@ -1,15 +1,18 @@
 'use strict'
 
-const fs = require('fs')
-const { grammar } = require('./day24-grammar')
+const { Grammar } = require('./day24-grammar')
 
-class Tile {
-  constructor (location) {
-    this.location = location
+function tokenize (location) {
+  const tokens = []
+  while (location.length > 0) {
+    const result = getToken(location)
+    tokens.push(result.token)
+    location = result.location
   }
+  return tokens
 }
 
-function getToken(location) {
+function getToken (location) {
   const intermediate = /n|s/
   let token = location.slice(0, 1)
   if (intermediate.test(token) === true) {
@@ -24,34 +27,51 @@ function getToken(location) {
   }
 }
 
-function parseLocation (location) {
-  let result
-  let parsedLocation = ''
-  result = getToken(location)
-  const token1 = result.token
-  if (result.location.length === 0) {
-    return token1
-  }
-  parsedLocation = parseLocation(result.location)
-  result = getToken(parsedLocation)
-  const token2 = result.token
-  const tuple = token1 + token2
-  if (tuple in grammar) {
-    parsedLocation = grammar[tuple] + result.location
-  } else {
-    parsedLocation = token1 + token2 + result.location
-  }
-  return parsedLocation
+function parseLocation (location, grammar) {
+  let changed = false
+  location.forEach(token => {
+    const compliments = grammar.findCompliments(token)
+    for (let i = 0; i < compliments.length; i++) {
+      if (location.includes(compliments[i])) {
+        location.splice(location.indexOf(token), 1)
+        location.splice(location.indexOf(compliments[i]), 1)
+        const result = grammar.getResult(token, compliments[i])
+        if (result !== '') location.unshift(result)
+        changed = true
+        break
+      }
+    }
+  })
+  return changed
 }
 
 function normalize (location) {
-  let mutated = true
-  while (mutated) {
-    const parsedLocation = parseLocation(location)
-    mutated = location !== parsedLocation
-    location = parsedLocation
-  }
-  return location
+  const grammar = new Grammar()
+  location = tokenize(location)
+  let changed = false
+  do {
+    changed = parseLocation(location, grammar)
+  } while (changed === true)
+  return location.sort().join('')
+}
+
+function flipTiles (tiles) {
+  const blackTiles = []
+  let blackFlip = 0
+  let whiteFlip = 0
+  tiles.forEach(location => {
+    const normalized = normalize(location)
+    if (blackTiles.includes(normalized)) {
+      whiteFlip++
+      blackTiles.splice(blackTiles.indexOf(normalized), 1)
+    } else {
+      blackFlip++
+      blackTiles.push(normalized)
+    }
+  })
+  // console.log(blackTiles.length, blackFlip, whiteFlip)
+  return blackTiles.length
 }
 
 exports.normalize = normalize
+exports.flipTiles = flipTiles
